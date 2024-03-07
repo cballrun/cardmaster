@@ -3,11 +3,13 @@ require "interactor"
 
 class GetLatestSales
 include Interactor
+    CardSale = Struct.new(:date, :condition, :quantity, :price, keyword_init: true)
+
 
     def call
         click_view_more_data_button(context.driver, context.wait)
-        three_times_click_load_more_sales_button(context.driver, context.wait)
-
+        four_times_click_load_more_sales_button(context.driver, context.wait)
+        create_sales(context.driver, context.wait)
     end
 
     private
@@ -19,7 +21,7 @@ include Interactor
         view_more_data_button.click
     end
 
-    def three_times_click_load_more_sales_button(driver, wait)
+    def four_times_click_load_more_sales_button(driver, wait)
         load_more_sales_button = context.wait.until do
             context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
@@ -37,5 +39,29 @@ include Interactor
         end
         sleep 2
         load_more_sales_button_3.click
+
+        load_more_sales_button_4 = context.wait.until do
+            context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
+        end
+        sleep 2
+        load_more_sales_button_4.click
+    end
+
+    def create_sales(driver, wait)
+        all_card_sales = []
+        sales_list = context.wait.until do
+            context.driver.find_element(:css, "ul.is-modal")
+        end
+        all_sales = sales_list.find_elements(:css, "li")
+        all_sales.each do |sale|
+            date = sale.find_element(:css, "span.date")&.text
+            condition = sale.find_element(:css, "span.condition")&.text
+            quantity = sale.find_element(:css, "span.quantity")&.text
+            price = sale.find_element(:css, "span.price")&.text
+
+            card_sale = CardSale.new(date: date, condition: condition, quantity: quantity, price: price)
+            all_card_sales << card_sale
+        end
+        all_card_sales
     end
 end
