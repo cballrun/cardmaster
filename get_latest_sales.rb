@@ -1,5 +1,6 @@
 require "selenium-webdriver"
 require "interactor"
+require "csv"
 
 class GetLatestSales
 include Interactor
@@ -7,9 +8,11 @@ include Interactor
 
 
     def call
-        click_view_more_data_button(context.driver, context.wait)
-        four_times_click_load_more_sales_button(context.driver, context.wait)
-        create_sales(context.driver, context.wait)
+        CSV.open("sales.csv", "wb", write_headers: true, headers: ["date", "condition", "quantity", "price"]) do |csv|
+            click_view_more_data_button(context.driver, context.wait)
+            four_times_click_load_more_sales_button(context.driver, context.wait)
+            create_sales(context.driver, context.wait, csv)
+        end
     end
 
     private
@@ -47,7 +50,7 @@ include Interactor
         load_more_sales_button_4.click
     end
 
-    def create_sales(driver, wait)
+    def create_sales(driver, wait, csv)
         all_card_sales = []
         sales_list = context.wait.until do
             context.driver.find_element(:css, "ul.is-modal")
@@ -60,8 +63,7 @@ include Interactor
             price = sale.find_element(:css, "span.price")&.text
 
             card_sale = CardSale.new(date: date, condition: condition, quantity: quantity, price: price)
-            all_card_sales << card_sale
+            csv << card_sale.to_a
         end
-        all_card_sales
     end
 end
