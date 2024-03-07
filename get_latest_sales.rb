@@ -18,33 +18,33 @@ include Interactor
     private
 
     def click_view_more_data_button(driver, wait)
-        view_more_data_button = context.wait.until do
-            context.driver.find_element(:css, "div.modal__activator")
+        view_more_data_button = wait.until do
+            driver.find_element(:css, "div.modal__activator")
         end
         view_more_data_button.click
     end
 
     def four_times_click_load_more_sales_button(driver, wait)
-        load_more_sales_button = context.wait.until do
-            context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
+        load_more_sales_button = wait.until do
+            driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
         sleep 2
         load_more_sales_button.click
 
-        load_more_sales_button_2 = context.wait.until do
-            context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
+        load_more_sales_button_2 = wait.until do
+            driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
         sleep 2
         load_more_sales_button_2.click
 
-        load_more_sales_button_3 = context.wait.until do
-            context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
+        load_more_sales_button_3 = wait.until do
+            driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
         sleep 2
         load_more_sales_button_3.click
 
-        load_more_sales_button_4 = context.wait.until do
-            context.driver.find_element(:css, "button.sales-history-snapshot__load-more")
+        load_more_sales_button_4 = wait.until do
+            driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
         sleep 2
         load_more_sales_button_4.click
@@ -52,8 +52,8 @@ include Interactor
 
     def create_sales(driver, wait, csv)
         all_card_sales = []
-        sales_list = context.wait.until do
-            context.driver.find_element(:css, "ul.is-modal")
+        sales_list = wait.until do
+            driver.find_element(:css, "ul.is-modal")
         end
         all_sales = sales_list.find_elements(:css, "li")
         all_sales.each do |sale|
