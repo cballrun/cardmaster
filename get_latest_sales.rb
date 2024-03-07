@@ -10,7 +10,9 @@ include Interactor
     def call
         CSV.open("sales.csv", "wb", write_headers: true, headers: ["date", "condition", "quantity", "price"]) do |csv|
             click_view_more_data_button(context.driver, context.wait)
-            four_times_click_load_more_sales_button(context.driver, context.wait)
+            while load_more_sales_button_visible?(context.wait, context.driver) do
+                click_load_more_sales_button(context.driver, context.wait)
+            end
             create_sales(context.driver, context.wait, csv)
         end
     end
@@ -24,30 +26,23 @@ include Interactor
         view_more_data_button.click
     end
 
-    def four_times_click_load_more_sales_button(driver, wait)
+    def load_more_sales_button(driver)
+        load_more_sales_button = driver.find_element(:css, "button.sales-history-snapshot__load-more")
+    end
+
+    def load_more_sales_button_visible?(wait, driver)
+        sleep 2
+        wait.until { load_more_sales_button(driver).displayed? }
+    rescue Selenium::WebDriver::Error::TimeoutError #THIS IS BAD CODE I NEED TO FIX IT
+        false
+    end
+
+    def click_load_more_sales_button(driver, wait)
         load_more_sales_button = wait.until do
             driver.find_element(:css, "button.sales-history-snapshot__load-more")
         end
         sleep 2
         load_more_sales_button.click
-
-        load_more_sales_button_2 = wait.until do
-            driver.find_element(:css, "button.sales-history-snapshot__load-more")
-        end
-        sleep 2
-        load_more_sales_button_2.click
-
-        load_more_sales_button_3 = wait.until do
-            driver.find_element(:css, "button.sales-history-snapshot__load-more")
-        end
-        sleep 2
-        load_more_sales_button_3.click
-
-        load_more_sales_button_4 = wait.until do
-            driver.find_element(:css, "button.sales-history-snapshot__load-more")
-        end
-        sleep 2
-        load_more_sales_button_4.click
     end
 
     def create_sales(driver, wait, csv)
