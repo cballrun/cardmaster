@@ -14,6 +14,7 @@ include Interactor
                 click_load_more_sales_button(context.driver, context.wait)
             end
             create_sales(context.driver, context.wait, csv)
+            leave_sales(context.driver, context.wait)
         end
     end
 
@@ -60,5 +61,10 @@ include Interactor
             card_sale = CardSale.new(date: date, condition: condition, quantity: quantity, price: price)
             csv << card_sale.to_a
         end
+    end
+
+    def leave_sales(driver, wait)
+        top_right_x = driver.find_element(:css, "span.modal__close")
+        top_right_x.click
     end
 end
