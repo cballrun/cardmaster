@@ -64,7 +64,9 @@ include Interactor
     end
 
     def leave_sales(driver, wait)
-        top_right_x = driver.find_element(:css, "span.modal__close")
+        top_right_x = wait.until do
+            driver.find_element(:css, "span.modal__close")
+        end
         top_right_x.click
     end
 end
